@@ -3,6 +3,15 @@ import { TradeWallet } from "./tradeWallet";
 import { BuyAndSale } from "./buyAndSale";
 import { TradeOperation } from "./tradeOperation";
 
+/**
+ * Cas de trading sur une année
+ *  
+ * googleHistory: historique du cours des actions google
+ * amazoneHistory: historique du cours des actions amazon
+ * buyAndSaleCount: nombre d'achat et de vente dans l'année
+ * tradeOperationList: historique des opérations de trading
+ * 
+ */
 export class TradeCase {
     public googleHistory:ActionPriceHistory;
     public amazoneHistory:ActionPriceHistory;
@@ -26,6 +35,15 @@ export class TradeCase {
         this.tradeOperationList.push(tradeOperation);
     }
 
+    /**
+     * Calcule le gain effectué pour le cas donné
+     * 
+     * Le calcul est déternminé par le nombre d'achat et de vente effectués dans l'année (buyAndSaleCount)
+     * 
+     * @param amount montant inital
+     * @return gain calculé
+     * 
+     */
     public calculateGain(amount: number): number {
         const actionPriceCount:number = Math.trunc(this.actionPriceTotalCount / this.buyAndSaleCount);
         let wallet:TradeWallet = new TradeWallet(amount, 0, 0);
@@ -38,6 +56,16 @@ export class TradeCase {
         return wallet.amount / amount;
     }
 
+    /**
+     * Calcule l'opération d'achat et de vente sur une période donnée
+     * 
+     * L'opération d'achat de vente retenue est la meilleure entre google et amazon
+     * 
+     * @param beginIndex: index de la 1ère actionPrice étudiée dans l'historique des cours google et amazon
+     * @param endIndex: index de la dernière + 1 actionPrice étudiée dans l'historique des cours google et amazon
+     * @return nouvelle instance du portefeuille
+     * 
+     */
     public buyAndSale(wallet:TradeWallet, beginIndex:number, endIndex:number):TradeWallet {
         const amazoneBuyAndSale:BuyAndSale = new BuyAndSale(beginIndex, endIndex, this.amazoneHistory);
         amazoneBuyAndSale.calculateOperation();

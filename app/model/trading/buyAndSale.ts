@@ -3,6 +3,20 @@ import { TradeWallet } from "./tradeWallet";
 import { ActionPrice } from "../action/actionPrice";
 import { ActionPriceHistory } from "../action/actionPriceHistory";
 
+/**
+ * Achat et vente d'une action
+ * 
+ * beginIndex: index de la 1ère actionPrice étudiée dans actionPriceHistory
+ * endIndex: index de la dernière + 1 actionPrice étudiée dans actionPriceHistory
+ * actionPriceHistory: historique du cours de l'action
+ * buyOperation: opération d'achat
+ * sale: opération de vente
+ * 
+ * buyIndex: index de l'action d'achat dans actionPriceHistory
+ * saleIndex: index de l'action de vente dans actionPriceHistory
+ * gain: gain résultat de l'opération d'achat et de vente
+ * 
+ */
 export class BuyAndSale {
     public beginIndex:number;
     public endIndex:number;
@@ -25,6 +39,14 @@ export class BuyAndSale {
         this.gain = 1;
     }
 
+    /**
+     * Calcule simple des indexes des actions d'achat et de vente
+     * 
+     * Ce calcul est basé sur la recherche des valeurs min et max du cours de l'action
+     * Il vérifie que l'acte d'achat précède l'acte de vente
+     * Il calcule le gain réalisé
+     * 
+     */
     public calculateOperationSimplest(): void {
 
         let buyValue:number = this.actionPriceHistory.actionPriceList[this.beginIndex].lowestPrice;
@@ -51,6 +73,14 @@ export class BuyAndSale {
         }
     }
 
+    /**
+     * Calcule pas à pas des indexes des actions d'achat et de vente
+     * 
+     * Ce calcul est basé sur la recherche de la combinaison achat et vente pour un gain maximum
+     * L'ensemble des combinaisons est issu d'une double boucle où l'achat précède la vente
+     * Il calcule le gain réalisé
+     * 
+     */
     public calculateOperationLoop(): void {
         for(let u = this.beginIndex; u < this.endIndex; u++) {
             let buyActionPrice:ActionPrice =  this.actionPriceHistory.actionPriceList[u];
@@ -67,6 +97,13 @@ export class BuyAndSale {
         }
     }
 
+    /**
+     * Calcule final des indexes des actions d'achat et de vente
+     * 
+     * Ce calcul lance en 1er lien le calcul simple
+     * Si celui ne donne pas de résultat, le calcul pas à pas est lancé
+     * 
+     */
     public calculateOperation(): void {
         this.calculateOperationSimplest();
         if( this.buyIndex < 0) {
@@ -75,7 +112,11 @@ export class BuyAndSale {
         }
     }
 
-    public setOperation():void {
+     /**
+     * Instancie buyOperation et saleOperation sur la base des indexes buyIndex et saleIndex calculés
+     * 
+     */
+     public setOperation():void {
         if( this.buyIndex >= 0) {
             let buyActionPrice:ActionPrice = this.actionPriceHistory.actionPriceList[this.buyIndex];
             buyActionPrice.operation= "buy";
@@ -89,6 +130,14 @@ export class BuyAndSale {
         }
     }
 
+    /**
+     * Crée une nouvelle instance du portefeuille, mise à jour par l'opération d'achat et de vente
+     * 
+     * @param tradeWallet portefeuille d'origine
+     * @param buyPercent ratio sur la valeur du portefeuille dédiée pour l'achat des actions
+     * @return nouvelle instance du portefeuille
+     * 
+     */
     public updateWallet(tradeWallet:TradeWallet, buyPercent:number): TradeWallet {
         this.setOperation();
         let result:TradeWallet = this.buyOperation ? this.buyOperation?.setWallet(tradeWallet, buyPercent) : tradeWallet;   

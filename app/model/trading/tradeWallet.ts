@@ -1,3 +1,12 @@
+
+/**
+ * Portefeuille
+ *  
+ * amount: valeur du portefeuille
+ * googleActionCount: nombre d'actions google
+ * amazonActionCount: nombre d'actions amazon
+ * 
+ */
 export class TradeWallet {
     public amount: number;
     public googleActionCount: number;
