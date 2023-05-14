@@ -20,7 +20,7 @@ export class ActionPriceHistory {
 
     public createFromJSON(data: any): void {
         if( data ) {
-            data.forEach( item => {
+            data.forEach( (item:any) => {
                 let actionPrice = ActionPrice.createFromJSON(this.name, item);
                 this.addActionPrice(actionPrice);
             });
