@@ -62,12 +62,9 @@ export default function Index() {
   const saleOperationAnouar:Operation = new Operation((service.buyAndSaleAnouar as BuyAndSale).saleOperation as TradeOperation); 
 
   // feat 3
-  let operationList:Operation[] = [];
-  for(let tradeOperation of (service.tradeCase as TradeCase).tradeOperationList) {
-    if( tradeOperation ) {
-      operationList.push(new Operation(tradeOperation));
-    }
-  }
+  let operationList:Operation[] = (service.tradeCase as TradeCase).tradeOperationList.map(  item => {
+    return new Operation(item);
+  });
   //console.log(operationList);
 
   return (
